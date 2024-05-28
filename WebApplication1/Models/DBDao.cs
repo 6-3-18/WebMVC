@@ -76,11 +76,11 @@ namespace WebApplication1.Models
         {
             string str_sql = string.Empty;
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
-            str_sql= @"INSERT INTO EMP(Emp_ID,Emp_Name,Age,Birthday) VALUES (@Emp_ID,@Emp_Name,@Age,@Birthday)";
+            str_sql= @"INSERT INTO EMP(Emp_Name,Age,Birthday) VALUES (@Emp_Name,@Age,@Birthday)";
             using (SqlCommand sqlcommand = new SqlCommand(str_sql))
             {
                 sqlcommand.Connection = sqlConnection;
-                sqlcommand.Parameters.Add(new SqlParameter("@Emp_ID", emp.Emp_ID));
+              //  sqlcommand.Parameters.Add(new SqlParameter("@Emp_ID", emp.Emp_ID));
                 sqlcommand.Parameters.Add(new SqlParameter("@Emp_Name", emp.Emp_Name));
                 sqlcommand.Parameters.Add(new SqlParameter("@Age", emp.Age));
                 sqlcommand.Parameters.Add(new SqlParameter("@Birthday", emp.Birthday));
