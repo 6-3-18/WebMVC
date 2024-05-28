@@ -10,7 +10,7 @@ namespace WebApplication1.Models
     /// </summary>
     public class EMP
     {
-        public string Emp_ID { get; set; }
+        public int Emp_ID { get; set; }
         public string Emp_Name { get; set; }
         public int Age { get; set; }
         public string Birthday { get; set; }

@@ -48,7 +48,7 @@ namespace WebApplication1.Models
                     {
                         EMP emp = new EMP
                         {
-                            Emp_ID = reader.GetString(reader.GetOrdinal("Emp_ID")),
+                            Emp_ID = reader.GetInt32(reader.GetOrdinal("Emp_ID")),
                             Emp_Name = reader.GetString(reader.GetOrdinal("Emp_name")),
                             Age = reader.GetInt32(reader.GetOrdinal("Age")),
                             Birthday = reader.GetString(reader.GetOrdinal("Birthday")),
@@ -116,7 +116,7 @@ namespace WebApplication1.Models
                 {
                     emp = new EMP
                     {
-                        Emp_ID = reader.GetString(reader.GetOrdinal("Emp_ID")),
+                        Emp_ID = reader.GetInt32(reader.GetOrdinal("Emp_ID")),
                         Emp_Name = reader.GetString(reader.GetOrdinal("Emp_name")),
                         Age = reader.GetInt32(reader.GetOrdinal("Age")),
                         Birthday = reader.GetString(reader.GetOrdinal("Birthday")),
