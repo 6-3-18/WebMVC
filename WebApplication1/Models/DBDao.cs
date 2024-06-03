@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Windows.Forms;
 
 namespace WebApplication1.Models
 {
@@ -36,35 +37,48 @@ namespace WebApplication1.Models
             str_sql= @"SELECT* FROM emp";
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
             SqlCommand sqlcommand = new SqlCommand(str_sql);
-            using(sqlcommand)
-            { 
-                sqlcommand.Connection = sqlConnection;
-                sqlConnection.Open();
-
-                SqlDataReader reader = sqlcommand.ExecuteReader();
-                if (reader.HasRows)
+            try
+            {
+                using (sqlcommand)
                 {
-                    while (reader.Read())
+                    sqlcommand.Connection = sqlConnection;
+                    sqlConnection.Open();
+
+                    SqlDataReader reader = sqlcommand.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        EMP emp = new EMP
+                        while (reader.Read())
                         {
-                            Emp_ID = reader.GetInt32(reader.GetOrdinal("Emp_ID")),
-                            Emp_Name = reader.GetString(reader.GetOrdinal("Emp_name")),
-                            Age = reader.GetInt32(reader.GetOrdinal("Age")),
-                            Birthday = reader.GetString(reader.GetOrdinal("Birthday")),
-                        };
-                        emps.Add(emp);
+                            EMP emp = new EMP
+                            {
+                                Emp_ID = reader.GetInt32(reader.GetOrdinal("Emp_ID")),
+                                Emp_Name = reader.GetString(reader.GetOrdinal("Emp_name")),
+                                Age = reader.GetInt32(reader.GetOrdinal("Age")),
+                                Birthday = reader.GetString(reader.GetOrdinal("Birthday")),
+                            };
+                            emps.Add(emp);
+                        }
+                    }
+                    else
+                    {
+                        //Console.WriteLine("查無資料!");
+                        DialogResult Result = MessageBox.Show("查無資料!", "Confirm Message");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("查無資料!");
-                }
-                sqlConnection.Close();
-                return emps;
             }
-               
+            catch (Exception ex)
+            {
+                //Console.WriteLine(ex.Message.ToString());
+                DialogResult Result = MessageBox.Show(ex.Message.ToString(), "Confirm Message");
+            }
+            finally
+            {
+                sqlConnection.Close();
+                            }
+            return emps;
         }
+              
+       
         
 
         /// <summary>
