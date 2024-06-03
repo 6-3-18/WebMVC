@@ -34,7 +34,7 @@ namespace WebApplication1.Models
         {
             List<EMP> emps = new List<EMP>();
             string str_sql = string.Empty;
-            str_sql= @"SELECT* FROM emp";
+            str_sql = @"SELECT* FROM emp";
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
             SqlCommand sqlcommand = new SqlCommand(str_sql);
             try
@@ -74,12 +74,12 @@ namespace WebApplication1.Models
             finally
             {
                 sqlConnection.Close();
-                            }
+            }
             return emps;
         }
-              
-       
-        
+
+
+
 
         /// <summary>
         /// 新增一筆員工基本檔記錄
@@ -90,19 +90,30 @@ namespace WebApplication1.Models
         {
             string str_sql = string.Empty;
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
-            str_sql= @"INSERT INTO EMP(Emp_Name,Age,Birthday) VALUES (@Emp_Name,@Age,@Birthday)";
-            using (SqlCommand sqlcommand = new SqlCommand(str_sql))
+            str_sql = @"INSERT INTO EMP(Emp_Name,Age,Birthday) VALUES (@Emp_Name,@Age,@Birthday)";
+            try
             {
-                sqlcommand.Connection = sqlConnection;
-              //  sqlcommand.Parameters.Add(new SqlParameter("@Emp_ID", emp.Emp_ID));
-                sqlcommand.Parameters.Add(new SqlParameter("@Emp_Name", emp.Emp_Name));
-                sqlcommand.Parameters.Add(new SqlParameter("@Age", emp.Age));
-                sqlcommand.Parameters.Add(new SqlParameter("@Birthday", emp.Birthday));
-                sqlConnection.Open();
-                sqlcommand.ExecuteNonQuery();
+                using (SqlCommand sqlcommand = new SqlCommand(str_sql))
+                {
+                    sqlcommand.Connection = sqlConnection;
+                    //  sqlcommand.Parameters.Add(new SqlParameter("@Emp_ID", emp.Emp_ID));
+                    sqlcommand.Parameters.Add(new SqlParameter("@Emp_Name", emp.Emp_Name));
+                    sqlcommand.Parameters.Add(new SqlParameter("@Age", emp.Age));
+                    sqlcommand.Parameters.Add(new SqlParameter("@Birthday", emp.Birthday));
+                    sqlConnection.Open();
+                    sqlcommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine(ex.Message.ToString());
+                DialogResult Result = MessageBox.Show(ex.Message.ToString(), "Confirm Message");
+            }
+            finally
+            {
                 sqlConnection.Close();
             }
-          
 
         }
 
@@ -118,34 +129,45 @@ namespace WebApplication1.Models
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
             string str_sql = string.Empty;
             str_sql = @"SELECT * FROM emp where EMP_id=@emp_id";
-            using (SqlCommand sqlcommand = new SqlCommand(str_sql))
+            try
             {
-                sqlcommand.Connection = sqlConnection;
-                sqlcommand.Parameters.Add(new SqlParameter("@emp_id", emp_id)); 
-                sqlConnection.Open();
-                SqlDataReader reader = sqlcommand.ExecuteReader();
-            if (reader.HasRows)
-            {
-                while (reader.Read())
+                using (SqlCommand sqlcommand = new SqlCommand(str_sql))
                 {
-                    emp = new EMP
+                    sqlcommand.Connection = sqlConnection;
+                    sqlcommand.Parameters.Add(new SqlParameter("@emp_id", emp_id));
+                    sqlConnection.Open();
+                    SqlDataReader reader = sqlcommand.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        Emp_ID = reader.GetInt32(reader.GetOrdinal("Emp_ID")),
-                        Emp_Name = reader.GetString(reader.GetOrdinal("Emp_name")),
-                        Age = reader.GetInt32(reader.GetOrdinal("Age")),
-                        Birthday = reader.GetString(reader.GetOrdinal("Birthday")),
-                    };
-                 
+                        while (reader.Read())
+                        {
+                            emp = new EMP
+                            {
+                                Emp_ID = reader.GetInt32(reader.GetOrdinal("Emp_ID")),
+                                Emp_Name = reader.GetString(reader.GetOrdinal("Emp_name")),
+                                Age = reader.GetInt32(reader.GetOrdinal("Age")),
+                                Birthday = reader.GetString(reader.GetOrdinal("Birthday")),
+                            };
+
+                        }
+                    }
+                    else
+                    {
+                        emp.Emp_Name = "查無到該筆資料!";   //借姓名欄位顯示警告訊息
+                    }
+
                 }
             }
-            else
+            catch (Exception ex)
             {
-               emp.Emp_Name="查無到該筆資料!";   //借姓名欄位顯示警告訊息
+                //Console.WriteLine(ex.Message.ToString());
+                DialogResult Result = MessageBox.Show(ex.Message.ToString(), "Confirm Message");
             }
-            sqlConnection.Close();
+            finally
+            {
+                sqlConnection.Close();
+            }
             return emp;
-            }
-
         }
 
         /// <summary>
@@ -159,18 +181,29 @@ namespace WebApplication1.Models
             string str_sql = string.Empty;
             str_sql = @"UPDATE emp SET emp_name =@Emp_Name,age=@Age,birthday=@Birthday WHERE emp_id = @Emp_id ";
             SqlCommand sqlcommand = new SqlCommand(str_sql);
-            using (sqlcommand)
+            try
             {
-                sqlcommand.Connection = sqlconnection;
-                sqlcommand.Parameters.Add(new SqlParameter("@Emp_Name", emp.Emp_Name));
-                sqlcommand.Parameters.Add(new SqlParameter("@Age", emp.Age));
-                sqlcommand.Parameters.Add(new SqlParameter("@Birthday", emp.Birthday));
-                sqlcommand.Parameters.Add(new SqlParameter("@Emp_id", emp.Emp_ID));
-                sqlconnection.Open();
-                sqlcommand.ExecuteNonQuery();
+                using (sqlcommand)
+                {
+                    sqlcommand.Connection = sqlconnection;
+                    sqlcommand.Parameters.Add(new SqlParameter("@Emp_Name", emp.Emp_Name));
+                    sqlcommand.Parameters.Add(new SqlParameter("@Age", emp.Age));
+                    sqlcommand.Parameters.Add(new SqlParameter("@Birthday", emp.Birthday));
+                    sqlcommand.Parameters.Add(new SqlParameter("@Emp_id", emp.Emp_ID));
+                    sqlconnection.Open();
+                    sqlcommand.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine(ex.Message.ToString());
+                DialogResult Result = MessageBox.Show(ex.Message.ToString(), "Confirm Message");
+            }
+            finally
+            {
                 sqlconnection.Close();
             }
-               
+
 
         }
 
@@ -185,17 +218,28 @@ namespace WebApplication1.Models
             string str_sql = string.Empty;
             str_sql = @"DELETE FROM emp WHERE emp_id = @Emp_id ";
             SqlCommand sqlcommand = new SqlCommand(str_sql);
-            using (sqlcommand)
+            try
             {
-                sqlcommand.Connection = sqlconnection;
-                sqlcommand.Parameters.Add(new SqlParameter("@Emp_id", emp_id));
-                sqlconnection.Open();
-                sqlcommand.ExecuteNonQuery();
+                using (sqlcommand)
+                {
+                    sqlcommand.Connection = sqlconnection;
+                    sqlcommand.Parameters.Add(new SqlParameter("@Emp_id", emp_id));
+                    sqlconnection.Open();
+                    sqlcommand.ExecuteNonQuery();
+                    sqlconnection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine(ex.Message.ToString());
+                DialogResult Result = MessageBox.Show(ex.Message.ToString(), "Confirm Message");
+            }
+            finally
+            {
                 sqlconnection.Close();
             }
+
         }
-
-     }
-
+    }
    
 }
